@@ -23,7 +23,6 @@ configurations.all {
 }
 
 dependencies {
-    api("com.atlassian.performance.tools:ssh:[2.0.0,3.0.0)")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("org.testcontainers:testcontainers:1.10.5")
     log4j(
@@ -31,6 +30,7 @@ dependencies {
         "core",
         "slf4j-impl"
     ).forEach { implementation(it) }
+    testCompile("com.atlassian.performance.tools:ssh:[2.0.0,3.0.0)")
     testCompile("junit:junit:4.12")
     testCompile("org.assertj:assertj-core:3.11.1")
 }

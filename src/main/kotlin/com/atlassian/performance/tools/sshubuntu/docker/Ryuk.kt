@@ -1,4 +1,4 @@
-package com.atlassian.performance.tools.sshubuntu
+package com.atlassian.performance.tools.sshubuntu.docker
 
 import org.testcontainers.DockerClientFactory
 import org.testcontainers.dockerclient.DockerClientProviderStrategy
