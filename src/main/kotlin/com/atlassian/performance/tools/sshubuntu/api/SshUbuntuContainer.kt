@@ -1,5 +1,6 @@
 package com.atlassian.performance.tools.sshubuntu.api
 
+import com.atlassian.performance.tools.sshubuntu.SshUbuntuProperties
 import com.atlassian.performance.tools.sshubuntu.docker.Ryuk
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
@@ -13,14 +14,13 @@ class SshUbuntuContainer {
 
     fun start(): SshUbuntu {
         Ryuk.disable()
-        val ubuntu: GenericContainerImpl = GenericContainerImpl("rastasheep/ubuntu-sshd:18.04")
+        val version = SshUbuntuProperties().version
+        val ubuntu: GenericContainerImpl = GenericContainerImpl("wyrzyk/ssh-ubuntu:$version")
             .withExposedPorts(SSH_PORT)
             .waitingFor(Wait.forListeningPort())
 
         ubuntu.start()
-        val authorizedKeys = MountableFile.forClasspathResource("authorized_keys")
         val sshKey = MountableFile.forClasspathResource("ssh_key")
-        ubuntu.copyFileToContainer(authorizedKeys, "/root/.ssh/authorized_keys")
         val sshPort = getHostSshPort(ubuntu)
         val privateKey = File(sshKey.filesystemPath).toPath()
         val ipAddress = ubuntu.containerIpAddress
