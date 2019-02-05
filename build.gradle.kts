@@ -63,7 +63,7 @@ val pushDocker = task<DockerPushImage>("pushDocker") {
     dependsOn(buildDocker)
     this.imageName.set(sshDockerImageName)
     this.registryCredentials.username.set("wyrzyk")
-    this.registryCredentials.password.set(System.getenv("docker-password"))
+    this.registryCredentials.password.set(System.getenv("DOCKER_PASSWORD"))
 }
 
 val generateProperties = task<Task>("generateProperties") {
