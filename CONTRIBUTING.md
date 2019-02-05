@@ -15,22 +15,17 @@ All the changes are welcome. Please help us to improve code, examples and docume
 
 ## Developer’s environment
 
-You can build and run aws-infrastructure on MacOS, Windows or Linux. You'll need JDK 8-11 to build and test the project.
+You can build and run aws-infrastructure on MacOS, Windows or Linux. You'll need JDK 8-11 and docker to build and test the project.
 
 ## Submitting changes
  
 Pull requests, issues and comments are welcome. For pull requests:
 
-  - Create your own [fork] of the repository and raise a pull request targeting master branch in the main repository
-  - Enable Bitbucket pipelines, it is important that you do it via *Settings* menu and not *Pipelines* menu otherwise 
-    Bitbucket will create an empty commit polluting Git history of your fork
+  - Create your own fork of the repository and raise a pull request targeting master branch in the main repository
   - Add tests for new features and bug fixes
   - Follow the existing style
   - Separate unrelated changes into multiple pull requests
 
-[fork]: https://confluence.atlassian.com/bitbucket/forking-a-repository-221449527.html
-[repository settings]: https://confluence.atlassian.com/bitbucket/environment-variables-794502608.html
-  
 See the [existing issues](https://ecosystem.atlassian.net/projects/JPERF/issues/?filter=allissues) for things to start contributing.
 
 For bigger changes, make sure you start a discussion first by creating
@@ -59,5 +54,8 @@ those contributing as an individual.
 ## Releasing
 
 Versioning, releasing and distribution are managed by the [gradle-release] plugin.
+
+Environment variable DOCKER_PASSWORD is needed to release the library. Currently, I use 
+my personal docker account, but I plan to switch to the companies account before the stable release.
 
 [gradle-release]: https://bitbucket.org/atlassian/gradle-release/src/release-0.4.3/README.md
