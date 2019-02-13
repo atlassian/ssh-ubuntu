@@ -15,7 +15,7 @@ class SshUbuntuContainer {
     fun start(): SshUbuntu {
         Ryuk.disable()
         val version = SshUbuntuProperties().version
-        val ubuntu: GenericContainerImpl = GenericContainerImpl("wyrzyk/ssh-ubuntu:$version")
+        val ubuntu: GenericContainerImpl = GenericContainerImpl("atlassian/ssh-ubuntu:$version")
             .withExposedPorts(SSH_PORT)
             .waitingFor(Wait.forListeningPort())
 
