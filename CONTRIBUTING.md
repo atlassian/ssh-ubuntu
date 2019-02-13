@@ -55,7 +55,6 @@ those contributing as an individual.
 
 Versioning, releasing and distribution are managed by the [gradle-release] plugin.
 
-Environment variable DOCKER_PASSWORD is needed to release the library. Currently, I use 
-my personal docker account, but I plan to switch to the companies account before the stable release.
+Environment variable DOCKER_PASSWORD and DOCKER_USERNAME are needed to release the library.
 
 [gradle-release]: https://bitbucket.org/atlassian/gradle-release/src/release-0.4.3/README.md

@@ -52,7 +52,7 @@ tasks.getByName("wrapper", Wrapper::class).apply {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-val sshDockerImageName = "wyrzyk/ssh-ubuntu:${project.version}"
+val sshDockerImageName = "atlassian/ssh-ubuntu:${project.version}"
 
 val buildDocker = task<DockerBuildImage>("buildDocker") {
     inputDir.set(file("docker"))
@@ -62,7 +62,7 @@ val buildDocker = task<DockerBuildImage>("buildDocker") {
 val pushDocker = task<DockerPushImage>("pushDocker") {
     dependsOn(buildDocker)
     this.imageName.set(sshDockerImageName)
-    this.registryCredentials.username.set("wyrzyk")
+    this.registryCredentials.username.set(System.getenv("DOCKER_USERNAME"))
     this.registryCredentials.password.set(System.getenv("DOCKER_PASSWORD"))
 }
 
