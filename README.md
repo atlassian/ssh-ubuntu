@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/atlassian/ssh-ubuntu.svg?branch=master)](https://travis-ci.com/atlassian/ssh-ubuntu)
+
 # Ssh Ubuntu
 
 Provides SSH to Ubuntu based machine.
