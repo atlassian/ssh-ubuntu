@@ -30,6 +30,10 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Add `SudoSshUbuntuImage`. Resolve [JPERF-445].
 - Add `AutoCloseable` wrappers for some `docker-java` resources.
 
+### Fixed
+- Avoid degradation-prone central Ubuntu servers. Fix [JPERF-444].
+
+[JPERF-444]: https://ecosystem.atlassian.net/browse/JPERF-444
 [JPERF-445]: https://ecosystem.atlassian.net/browse/JPERF-445
 
 ## [0.1.0] - 2019-02-15

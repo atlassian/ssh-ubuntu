@@ -85,8 +85,10 @@ class SudoSshUbuntuImage(
             authentication = PasswordAuthentication("root"),
             port = sshPort
         )
+        val debianMirror = "deb mirror://mirrors.ubuntu.com/mirrors.txt xenial main restricted universe multiverse"
         val ssh = Ssh(sshHost)
         ssh.newConnection().use {
+            it.execute("echo \"$debianMirror\\n\" > /etc/apt/sources.list")
             it.execute("apt-get update", Duration.ofSeconds(50))
             it.execute("apt-get install sudo")
         }
