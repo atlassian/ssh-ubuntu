@@ -1,13 +1,7 @@
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
-import pl.allegro.tech.build.axion.release.OutputCurrentVersionTask
-import pl.allegro.tech.build.axion.release.infrastructure.di.GradleAwareContext
-
 val kotlinVersion = "1.2.70"
 
 plugins {
     kotlin("jvm").version("1.2.70")
-    id("com.bmuschko.docker-remote-api").version("4.4.0")
     `java-library`
     id("com.atlassian.performance.tools.gradle-release").version("0.5.0")
 }
@@ -18,7 +12,11 @@ configurations.all {
         failOnVersionConflict()
         eachDependency {
             when (requested.module.toString()) {
-                "org.jetbrains:annotations" -> useVersion("13.0")
+                "javax.annotation:javax.annotation-api" -> useVersion("1.3.2")
+                "org.apache.httpcomponents:httpclient" -> useVersion("4.5.6")
+                "commons-codec:commons-codec" -> useVersion("1.11")
+                "org.bouncycastle:bcpkix-jdk15on" -> useVersion("1.60")
+                "org.bouncycastle:bcprov-jdk15on" -> useVersion("1.60")
                 "org.slf4j:slf4j-api" -> useVersion("1.7.25")
             }
             when (requested.group) {
@@ -29,14 +27,14 @@ configurations.all {
 }
 
 dependencies {
+    api("com.atlassian.performance.tools:ssh:[2.0.0,3.0.0)")
+    api("com.github.docker-java:docker-java:3.1.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-    implementation("org.testcontainers:testcontainers:1.10.5")
     log4j(
         "api",
         "core",
         "slf4j-impl"
     ).forEach { implementation(it) }
-    testCompile("com.atlassian.performance.tools:ssh:[2.0.0,3.0.0)")
     testCompile("junit:junit:4.12")
     testCompile("org.assertj:assertj-core:3.11.1")
 }
@@ -51,32 +49,3 @@ tasks.getByName("wrapper", Wrapper::class).apply {
     gradleVersion = "5.0"
     distributionType = Wrapper.DistributionType.ALL
 }
-
-val sshDockerImageName = "atlassian/ssh-ubuntu:${project.version}"
-
-val buildDocker = task<DockerBuildImage>("buildDocker") {
-    inputDir.set(file("docker"))
-    tags.add(sshDockerImageName)
-}
-
-val pushDocker = task<DockerPushImage>("pushDocker") {
-    dependsOn(buildDocker)
-    this.imageName.set(sshDockerImageName)
-    this.registryCredentials.username.set(System.getenv("DOCKER_USERNAME"))
-    this.registryCredentials.password.set(System.getenv("DOCKER_PASSWORD"))
-}
-
-val generateProperties = task<Task>("generateProperties") {
-    dependsOn(tasks["processResources"])
-    doLast {
-        File("$buildDir/resources/main/app.properties").bufferedWriter().use { writer ->
-            mapOf("version" to project.version.toString())
-                .toProperties()
-                .store(writer,null)
-        }
-    }
-}
-
-tasks["publish"].dependsOn(pushDocker)
-tasks["classes"].dependsOn(generateProperties)
-tasks["build"].dependsOn(buildDocker)

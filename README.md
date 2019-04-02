@@ -1,8 +1,13 @@
 [![Build Status](https://travis-ci.com/atlassian/ssh-ubuntu.svg?branch=master)](https://travis-ci.com/atlassian/ssh-ubuntu)
 
-# Ssh Ubuntu
+# SSH Ubuntu
 
-Provides SSH to Ubuntu based machine.
+Provides SSH to an Ubuntu instance, which can:
+ * run Docker
+ * run `sudo`
+ * connect to containers in a Docker network
+
+Requires Docker.
 
 ## Reporting issues
 
