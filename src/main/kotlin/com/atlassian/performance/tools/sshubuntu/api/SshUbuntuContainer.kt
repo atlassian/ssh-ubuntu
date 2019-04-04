@@ -6,8 +6,13 @@ import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.utility.MountableFile
 import java.io.File
+import java.util.function.Consumer
 
-class SshUbuntuContainer {
+class SshUbuntuContainer(
+    private val containerCustomization: Consumer<GenericContainer<*>>
+) {
+    constructor() : this(Consumer { })
+
     internal companion object {
         private val SSH_PORT = 22
     }
@@ -15,15 +20,16 @@ class SshUbuntuContainer {
     fun start(): SshUbuntu {
         Ryuk.disable()
         val version = SshUbuntuProperties().version
-        val ubuntu: GenericContainerImpl = GenericContainerImpl("atlassian/ssh-ubuntu:$version")
+        val ubuntu: GenericContainer<*> = GenericContainerImpl("atlassian/ssh-ubuntu:$version")
             .withExposedPorts(SSH_PORT)
             .waitingFor(Wait.forListeningPort())
+        containerCustomization.accept(ubuntu)
 
         ubuntu.start()
         val sshKey = MountableFile.forClasspathResource("ssh_key")
         val sshPort = getHostSshPort(ubuntu)
         val privateKey = File(sshKey.filesystemPath).toPath()
-        val ipAddress = ubuntu.containerIpAddress
+        val ipAddress = ubuntu.getContainerIpAddress()
         val sshHost = SshHost(
             ipAddress = ipAddress,
             userName = "root",
@@ -35,13 +41,17 @@ class SshUbuntuContainer {
                 return sshHost
             }
 
+            override fun getContainer(): GenericContainer<out GenericContainer<*>> {
+                return ubuntu
+            }
+
             override fun close() {
                 ubuntu.close()
             }
         }
     }
 
-    private fun getHostSshPort(ubuntuContainer: GenericContainerImpl) =
+    private fun getHostSshPort(ubuntuContainer: GenericContainer<*>) =
         ubuntuContainer.getMappedPort(SSH_PORT)
 
     /**

@@ -23,6 +23,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/master...release-0.1.0
 
+### Added
+- Customize `SshUbuntuContainer` via `testcontainers` API. Resolve [JPERF-445].
+
+[JPERF-445]: https://ecosystem.atlassian.net/browse/JPERF-445
+
 ## [0.1.0] - 2019-02-15
 [0.1.0]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.1.0...initial-commit
 
