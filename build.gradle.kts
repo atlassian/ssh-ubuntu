@@ -77,4 +77,4 @@ val generateProperties = task<Task>("generateProperties") {
 
 tasks["publish"].dependsOn(pushDocker)
 tasks["classes"].dependsOn(generateProperties)
-tasks["build"].dependsOn(buildDocker)
+tasks["test"].dependsOn(buildDocker)
