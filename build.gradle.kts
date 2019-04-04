@@ -1,7 +1,5 @@
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
-import pl.allegro.tech.build.axion.release.OutputCurrentVersionTask
-import pl.allegro.tech.build.axion.release.infrastructure.di.GradleAwareContext
 
 val kotlinVersion = "1.2.70"
 
@@ -30,7 +28,7 @@ configurations.all {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-    implementation("org.testcontainers:testcontainers:1.10.5")
+    api("org.testcontainers:testcontainers:1.10.5")
     log4j(
         "api",
         "core",
@@ -72,7 +70,7 @@ val generateProperties = task<Task>("generateProperties") {
         File("$buildDir/resources/main/app.properties").bufferedWriter().use { writer ->
             mapOf("version" to project.version.toString())
                 .toProperties()
-                .store(writer,null)
+                .store(writer, null)
         }
     }
 }
