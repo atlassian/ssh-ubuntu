@@ -9,6 +9,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.testcontainers.containers.GenericContainer
 import java.net.Socket
+import java.time.Duration
+import java.time.Instant
 import java.util.function.Consumer
 
 class SshUbuntuTest {
@@ -18,6 +20,16 @@ class SshUbuntuTest {
 
         assertThat(result.output).isEqualToIgnoringNewLines("test")
         assertThat(result.isSuccessful()).isTrue()
+    }
+
+    @Test
+    fun shouldInstallPackagesFast() {
+        val start = Instant.now()
+        val result = execute("apt-get update && export DEBIAN_FRONTEND=noninteractive; apt-get install gnupg2 -y -qq")
+        val duration = Duration.between(start, Instant.now())
+
+        assertThat(result.isSuccessful()).isTrue()
+        assertThat(duration).isLessThan(Duration.ofSeconds(15))
     }
 
     private fun execute(cmd: String): SshConnection.SshResult {
