@@ -21,7 +21,15 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.0...master
+[Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.1...master
+
+## [0.2.1] - 2019-09-13
+[0.2.1]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.0...release-0.2.1
+
+### Fixed
+- use geo-locating mirror for `apt-get` packages for faster installs. Resolve [JPERF-444].
+
+[JPERF-444]: https://ecosystem.atlassian.net/browse/JPERF-444
 
 ## [0.2.0] - 2019-04-05
 [0.2.0]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.1.0...release-0.2.0
@@ -29,11 +37,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ### Added
 - Customize `SshUbuntuContainer` via `testcontainers` API. Resolve [JPERF-445].
 
-### Fixed
-- Use fast mirror for `apt-get` packages. Resolve [JPERF-444].
-
 [JPERF-445]: https://ecosystem.atlassian.net/browse/JPERF-445
-[JPERF-444]: https://ecosystem.atlassian.net/browse/JPERF-444
 
 ## [0.1.0] - 2019-02-15
 [0.1.0]: https://github.com/atlassian/ssh-ubuntu/compare/initial-commit...release-0.1.0
