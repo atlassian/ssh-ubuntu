@@ -29,7 +29,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ### Added
 - Customize `SshUbuntuContainer` via `testcontainers` API. Resolve [JPERF-445].
 
+### Fixed
+- Use fast mirror for `apt-get` packages. Resolve [JPERF-444].
+
 [JPERF-445]: https://ecosystem.atlassian.net/browse/JPERF-445
+[JPERF-444]: https://ecosystem.atlassian.net/browse/JPERF-444
 
 ## [0.1.0] - 2019-02-15
 [0.1.0]: https://github.com/atlassian/ssh-ubuntu/compare/initial-commit...release-0.1.0
