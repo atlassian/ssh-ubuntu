@@ -23,6 +23,9 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.1...master
 
+### Fixed 
+- Use distribution-specific mirrors.
+
 ## [0.2.1] - 2019-09-13
 [0.2.1]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.0...release-0.2.1
 
