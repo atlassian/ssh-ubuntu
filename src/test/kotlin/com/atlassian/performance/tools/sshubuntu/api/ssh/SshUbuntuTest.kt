@@ -32,7 +32,10 @@ class SshUbuntuTest {
         assertThat(duration).isLessThan(Duration.ofSeconds(15))
     }
 
-    private fun execute(cmd: String): SshConnection.SshResult {
+    private fun execute(
+        cmd: String,
+        timeout: Duration = Duration.ofSeconds(30)
+    ): SshConnection.SshResult {
         SshUbuntuContainer().start().use { sshUbuntu ->
             Ssh(with(sshUbuntu.ssh) {
                 SshHost(
@@ -42,7 +45,7 @@ class SshUbuntuTest {
                     port = port
                 )
             }).newConnection().use { connection ->
-                return connection.execute(cmd)
+                return connection.execute(cmd, timeout)
             }
         }
     }
@@ -72,5 +75,15 @@ class SshUbuntuTest {
         }
 
         assertThat(privileged).isTrue()
+    }
+
+    @Test
+    fun shouldInstallViaAptGet() {
+        val result = execute(
+            cmd = "export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get install software-properties-common -y -qq",
+            timeout = Duration.ofMinutes(3)
+        )
+
+        assertThat(result.isSuccessful()).isTrue()
     }
 }
