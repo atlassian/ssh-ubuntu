@@ -21,7 +21,10 @@ Adding a requirement of a major version of a dependency is breaking a contract.
 Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
-[Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.1...master
+[Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.2...master
+
+## [0.2.2] - 2019-09-16
+[0.2.2]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.1...release-0.2.2
 
 ### Fixed 
 - Use distribution-specific mirrors.
