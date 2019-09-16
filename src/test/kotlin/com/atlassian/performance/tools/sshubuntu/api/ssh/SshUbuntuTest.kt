@@ -18,7 +18,6 @@ class SshUbuntuTest {
         val result = execute("echo test")
 
         assertThat(result.output).isEqualToIgnoringNewLines("test")
-        assertThat(result.isSuccessful()).isTrue()
     }
 
     @Test
@@ -85,11 +84,9 @@ class SshUbuntuTest {
 
     @Test
     fun shouldInstallViaAptGet() {
-        val result = execute(
+        execute(
             cmd = "export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get install software-properties-common -y -qq",
             timeout = Duration.ofMinutes(3)
         )
-
-        assertThat(result.isSuccessful()).isTrue()
     }
 }
