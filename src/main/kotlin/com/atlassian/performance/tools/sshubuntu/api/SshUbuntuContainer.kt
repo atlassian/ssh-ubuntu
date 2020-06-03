@@ -1,7 +1,6 @@
 package com.atlassian.performance.tools.sshubuntu.api
 
 import com.atlassian.performance.tools.sshubuntu.SshUbuntuProperties
-import com.atlassian.performance.tools.sshubuntu.docker.Ryuk
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.utility.MountableFile
@@ -18,7 +17,6 @@ class SshUbuntuContainer(
     }
 
     fun start(): SshUbuntu {
-        Ryuk.disable()
         val version = SshUbuntuProperties().version
         val ubuntu: GenericContainer<*> = GenericContainerImpl("atlassian/ssh-ubuntu:$version")
             .withExposedPorts(SSH_PORT)
