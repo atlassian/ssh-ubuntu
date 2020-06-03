@@ -28,7 +28,7 @@ configurations.all {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-    api("org.testcontainers:testcontainers:1.10.5")
+    api("org.testcontainers:testcontainers:1.14.3")
     log4j(
         "api",
         "core",
