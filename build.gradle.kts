@@ -7,7 +7,7 @@ plugins {
     kotlin("jvm").version("1.2.70")
     id("com.bmuschko.docker-remote-api").version("4.4.0")
     `java-library`
-    id("com.atlassian.performance.tools.gradle-release").version("0.5.0")
+    id("com.atlassian.performance.tools.gradle-release").version("0.7.1")
 }
 
 configurations.all {
