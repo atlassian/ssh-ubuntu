@@ -22,7 +22,7 @@ class SshUbuntuTest {
 
     @Test
     fun shouldInstallPackagesFast() {
-        SshUbuntuContainer().start().use { sshUbuntu ->
+        SshUbuntuContainer().start("bionic").use { sshUbuntu ->
             Ssh(with(sshUbuntu.ssh) {
                 SshHost(
                     ipAddress = ipAddress,
@@ -32,7 +32,7 @@ class SshUbuntuTest {
                 )
             }).newConnection().use { connection ->
                 connection.execute("apt-get update")
-                connection.execute("export DEBIAN_FRONTEND=noninteractive; apt-get install gnupg2 -y -qq", Duration.ofSeconds(15))
+                connection.execute("export DEBIAN_FRONTEND=noninteractive; apt-get install wget -y -q", Duration.ofSeconds(15))
             }
         }
     }
@@ -41,7 +41,7 @@ class SshUbuntuTest {
         cmd: String,
         timeout: Duration = Duration.ofSeconds(30)
     ): SshConnection.SshResult {
-        SshUbuntuContainer().start().use { sshUbuntu ->
+        SshUbuntuContainer().start("bionic").use { sshUbuntu ->
             Ssh(with(sshUbuntu.ssh) {
                 SshHost(
                     ipAddress = ipAddress,
@@ -62,7 +62,7 @@ class SshUbuntuTest {
             container.addExposedPort(additionalPort)
         }
 
-        SshUbuntuContainer(customization).start().use { sshUbuntu ->
+        SshUbuntuContainer(customization).start("bionic").use { sshUbuntu ->
             val ip = sshUbuntu.container.getContainerIpAddress()
             val port = sshUbuntu.container.getMappedPort(additionalPort)
             Socket(ip, port).close()
@@ -75,7 +75,7 @@ class SshUbuntuTest {
             container.setPrivilegedMode(true)
         }
 
-        val privileged = SshUbuntuContainer(customization).start().use { sshUbuntu ->
+        val privileged = SshUbuntuContainer(customization).start("bionic").use { sshUbuntu ->
             sshUbuntu.container.isPrivilegedMode()
         }
 
