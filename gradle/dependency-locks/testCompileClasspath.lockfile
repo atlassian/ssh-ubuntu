@@ -14,9 +14,9 @@ junit:junit:4.12
 net.i2p.crypto:eddsa:0.2.0
 net.java.dev.jna:jna:5.5.0
 org.apache.commons:commons-compress:1.20
-org.apache.logging.log4j:log4j-api:2.10.0
-org.apache.logging.log4j:log4j-core:2.10.0
-org.apache.logging.log4j:log4j-slf4j-impl:2.10.0
+org.apache.logging.log4j:log4j-api:2.17.0
+org.apache.logging.log4j:log4j-core:2.17.0
+org.apache.logging.log4j:log4j-slf4j-impl:2.17.0
 org.assertj:assertj-core:3.11.1
 org.bouncycastle:bcpkix-jdk15on:1.56
 org.bouncycastle:bcprov-jdk15on:1.56
