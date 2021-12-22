@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/atlassian/ssh-ubuntu.svg?branch=master)](https://travis-ci.com/atlassian/ssh-ubuntu)
+[![CI status](https://github.com/atlassian/ssh-ubuntu/workflows/CI/badge.svg)](https://github.com/atlassian/ssh-ubuntu/actions?query=branch%3Amaster+workflow%3ACI)
 
 # Ssh Ubuntu
 
