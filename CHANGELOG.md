@@ -23,6 +23,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.2...master
 
+### Fixed
+- Bump log4j to `2.17.1`. Address [JPERF-765].
+
+[JPERF-765]: https://ecosystem.atlassian.net/browse/JPERF-765
+
 ## [0.2.2] - 2019-09-16
 [0.2.2]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.1...release-0.2.2
 
