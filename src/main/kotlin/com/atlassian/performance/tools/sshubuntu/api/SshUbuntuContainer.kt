@@ -1,10 +1,11 @@
 package com.atlassian.performance.tools.sshubuntu.api
 
-import com.atlassian.performance.tools.sshubuntu.SshUbuntuProperties
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
+import org.testcontainers.images.builder.ImageFromDockerfile
 import org.testcontainers.utility.MountableFile
 import java.io.File
+import java.util.concurrent.Future
 import java.util.function.Consumer
 
 class SshUbuntuContainer(
@@ -17,8 +18,11 @@ class SshUbuntuContainer(
     }
 
     fun start(): SshUbuntu {
-        val version = SshUbuntuProperties().version
-        val ubuntu: GenericContainer<*> = GenericContainerImpl("atlassian/ssh-ubuntu:$version")
+        return start("bionic")
+    }
+
+    fun start(ubuntuCodeName: String): SshUbuntu {
+        val ubuntu: GenericContainer<*> = GenericContainerImpl(getImage(ubuntuCodeName))
             .withExposedPorts(SSH_PORT)
             .waitingFor(Wait.forListeningPort())
         containerCustomization.accept(ubuntu)
@@ -49,6 +53,17 @@ class SshUbuntuContainer(
         }
     }
 
+    private fun getImage(baseImage: String): Future<String> {
+        if (baseImage[0].isDigit()) {
+            throw IllegalArgumentException("Only ubuntu codenames (e.g. focal) are supported, got: $baseImage")
+        }
+        val dockerfile = javaClass.getResource("/image/Dockerfile").readText()
+            .replace("UBUNTU_CODENAME", baseImage)
+            return ImageFromDockerfile("ssh-ubuntu-$baseImage", false)
+            .withFileFromClasspath("authorized_keys", "image/authorized_keys")
+            .withFileFromString("Dockerfile", dockerfile)
+    }
+
     private fun getHostSshPort(ubuntuContainer: GenericContainer<*>) =
         ubuntuContainer.getMappedPort(SSH_PORT)
 
@@ -59,7 +74,7 @@ class SshUbuntuContainer(
      * https://github.com/testcontainers/testcontainers-java/issues/318
      * The class is a workaround for the problem.
      */
-    private class GenericContainerImpl(dockerImageName: String) : GenericContainer<GenericContainerImpl>(dockerImageName) {
+    private class GenericContainerImpl(imageName: Future<String>) : GenericContainer<GenericContainerImpl>(imageName) {
         override fun getLivenessCheckPortNumbers(): Set<Int> {
             return setOf(getMappedPort(SSH_PORT))
         }
