@@ -86,7 +86,7 @@ class SshUbuntuTest {
     fun shouldInstallViaAptGet() {
         execute(
             cmd = "export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get install software-properties-common -y -qq",
-            timeout = Duration.ofMinutes(5)
+            timeout = Duration.ofMinutes(10)
         )
     }
 }
