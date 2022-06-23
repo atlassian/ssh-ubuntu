@@ -31,8 +31,8 @@ class SshUbuntuTest {
                     port = port
                 )
             }).newConnection().use { connection ->
-                connection.execute("apt-get update")
-                connection.execute("export DEBIAN_FRONTEND=noninteractive; apt-get install gnupg2 -y -qq", Duration.ofSeconds(15))
+                connection.execute("apt-get update", Duration.ofMinutes(5))
+                connection.execute("export DEBIAN_FRONTEND=noninteractive; apt-get install gnupg2 -y -qq", Duration.ofMinutes(5))
             }
         }
     }
@@ -86,7 +86,7 @@ class SshUbuntuTest {
     fun shouldInstallViaAptGet() {
         execute(
             cmd = "export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get install software-properties-common -y -qq",
-            timeout = Duration.ofMinutes(3)
+            timeout = Duration.ofMinutes(5)
         )
     }
 }
