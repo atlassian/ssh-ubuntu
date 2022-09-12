@@ -1,6 +1,3 @@
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
-
 val kotlinVersion = "1.2.70"
 val log4jVersion = "2.17.1"
 
@@ -52,32 +49,3 @@ tasks.getByName("wrapper", Wrapper::class).apply {
     gradleVersion = "5.0"
     distributionType = Wrapper.DistributionType.ALL
 }
-
-val sshDockerImageName = "atlassian/ssh-ubuntu:${project.version}"
-
-val buildDocker = task<DockerBuildImage>("buildDocker") {
-    inputDir.set(file("docker"))
-    tags.add(sshDockerImageName)
-}
-
-val pushDocker = task<DockerPushImage>("pushDocker") {
-    dependsOn(buildDocker)
-    this.imageName.set(sshDockerImageName)
-    this.registryCredentials.username.set(System.getenv("DOCKER_USERNAME"))
-    this.registryCredentials.password.set(System.getenv("DOCKER_PASSWORD"))
-}
-
-val generateProperties = task<Task>("generateProperties") {
-    dependsOn(tasks["processResources"])
-    doLast {
-        File("$buildDir/resources/main/app.properties").bufferedWriter().use { writer ->
-            mapOf("version" to project.version.toString())
-                .toProperties()
-                .store(writer, null)
-        }
-    }
-}
-
-tasks["publish"].dependsOn(pushDocker)
-tasks["classes"].dependsOn(generateProperties)
-tasks["test"].dependsOn(buildDocker)
