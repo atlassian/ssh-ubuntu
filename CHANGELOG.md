@@ -22,6 +22,8 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.2...master
+### Fixed
+- Generate test ubuntu image at runtime and don't push it to any registry. Address [JPERF-791].
 
 ### Fixed
 - Bump log4j to `2.17.1`. Address [JPERF-765].
