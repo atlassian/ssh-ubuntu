@@ -17,14 +17,12 @@ class SshUbuntuContainer(
     }
 
     fun start(): SshUbuntu {
-        val ubuntu: GenericContainer<*> = GenericContainerImpl(getDockerFileFromTemplate(ubuntuVersion = "18.04"))
+        val ubuntu: GenericContainer<*> = UbuntuContainer(version = "18.04")
             .withExposedPorts(SSH_PORT)
             .waitingFor(Wait.forListeningPort())
         containerCustomization.accept(ubuntu)
 
         ubuntu.start()
-        val authorizedKeys = MountableFile.forClasspathResource("docker/authorized_keys")
-        ubuntu.copyFileToContainer(authorizedKeys, "/root/.ssh/authorized_keys")
 
         val sshKey = MountableFile.forClasspathResource("ssh_key")
         val sshPort = getHostSshPort(ubuntu)
@@ -51,11 +49,6 @@ class SshUbuntuContainer(
         }
     }
 
-    private fun getDockerFileFromTemplate(ubuntuVersion: String): String {
-        val result = SshUbuntuContainer::class.java.getResource("/docker/Dockerfile.template").readText().replace("%UBUNTU_VERSION%", ubuntuVersion)
-        return result
-    }
-
     private fun getHostSshPort(ubuntuContainer: GenericContainer<*>) =
         ubuntuContainer.getMappedPort(SSH_PORT)
 
@@ -66,9 +59,10 @@ class SshUbuntuContainer(
      * https://github.com/testcontainers/testcontainers-java/issues/318
      * The class is a workaround for the problem.
      */
-    private class GenericContainerImpl(dockerFileContent: String) : GenericContainer<GenericContainerImpl>(
+    private class UbuntuContainer(version: String) : GenericContainer<UbuntuContainer>(
         ImageFromDockerfile(/* dockerImageName = */ "ssh-ubuntu", /* deleteOnExit = */ false)
-            .withFileFromString("Dockerfile", dockerFileContent)
+            .withFileFromString("Dockerfile", SshUbuntuContainer::class.java.getResource("/docker/Dockerfile.template").readText().replace("%UBUNTU_VERSION%", version))
+            .withFileFromClasspath("authorized_keys", "/docker/authorized_keys")
     ) {
         override fun getLivenessCheckPortNumbers(): Set<Int> {
             return setOf(getMappedPort(SSH_PORT))
