@@ -23,6 +23,10 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.5...master
 
+### Changed
+- Bump testcontainers library to 1.17.3
+- Generate SshUbuntuContainer in a way it needs no modifications of container after starting it. This way it should be less sensitive to changes in behaviour of feature testcontainer library changes.
+
 ## [0.2.5] - 2022-09-14
 [0.2.5]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.2...release-0.2.5
 - Versions 0.2.3 and 0.2.4 were not released due to problem with pushing docker image to docker repository.
