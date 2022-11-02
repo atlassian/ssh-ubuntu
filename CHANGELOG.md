@@ -23,6 +23,12 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.6...master
 
+### Added
+- Add `SshUbuntuContainer.Builder` with `version` override.
+
+### Removed
+- Remove `SshUbuntuContainer` constructors in favour of the builder.
+
 ## [0.2.6] - 2022-09-20
 
 ### Changed

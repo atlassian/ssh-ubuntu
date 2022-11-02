@@ -33,15 +33,14 @@ class SshUbuntuTest {
         }
     }
 
-
     @Test
     fun shouldExposeAdditionalPorts() {
         val additionalPort = 8080
-        val customization = Consumer { container: GenericContainer<*> ->
-            container.addExposedPort(additionalPort)
-        }
+        val container = SshUbuntuContainer.Builder()
+            .customization(Consumer { it.addExposedPort(additionalPort) })
+            .build()
 
-        SshUbuntuContainer(customization).start().use { sshUbuntu ->
+        container.start().use { sshUbuntu ->
             val ip = sshUbuntu.container.getContainerIpAddress()
             val port = sshUbuntu.container.getMappedPort(additionalPort)
             Socket(ip, port).close()
@@ -50,13 +49,13 @@ class SshUbuntuTest {
 
     @Test
     fun shouldRunInPrivilegedMode() {
-        val customization = Consumer { container: GenericContainer<*> ->
-            container.setPrivilegedMode(true)
-        }
+        val container = SshUbuntuContainer.Builder()
+            .customization(Consumer { it.setPrivilegedMode(true) })
+            .build()
 
-        val privileged = SshUbuntuContainer(customization).start().use { sshUbuntu ->
-            sshUbuntu.container.isPrivilegedMode()
-        }
+        val privileged = container
+            .start()
+            .use { it.container.isPrivilegedMode() }
 
         assertThat(privileged).isTrue()
     }
@@ -73,7 +72,7 @@ class SshUbuntuTest {
 
     @Test
     fun shouldRunDockerInDocker() {
-        runSsh(Consumer(::enableDockerInDocker)) {
+        runSsh(SshUbuntuContainer.Builder().customization(Consumer(::enableDockerInDocker))) {
             it.execute("apt update")
             it.execute("apt install curl -y -qq")
             it.execute("curl -fsSL https://get.docker.com -o get-docker.sh")
@@ -90,9 +89,9 @@ class SshUbuntuTest {
     }
 
     private fun <T> runSsh(
-        customization: Consumer<GenericContainer<*>> = Consumer {},
+        ubuntuBuilder: SshUbuntuContainer.Builder = SshUbuntuContainer.Builder(),
         action: (connection: SshConnection) -> T
-    ): T = SshUbuntuContainer(customization).start().use { sshUbuntu ->
+    ): T = ubuntuBuilder.build().start().use { sshUbuntu ->
         val host = with(sshUbuntu.ssh) {
             SshHost(ipAddress, userName, PublicKeyAuthentication(privateKey), port)
         }
