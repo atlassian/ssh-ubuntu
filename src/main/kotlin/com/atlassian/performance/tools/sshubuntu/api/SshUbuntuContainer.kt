@@ -8,20 +8,19 @@ import java.io.File
 import java.util.*
 import java.util.function.Consumer
 
-class SshUbuntuContainer(
-    private val containerCustomization: Consumer<GenericContainer<*>>
+class SshUbuntuContainer private constructor(
+    private val version: String,
+    private val customization: Consumer<GenericContainer<*>>
 ) {
-    constructor() : this(Consumer { })
-
-    internal companion object {
-        private val SSH_PORT = 22
+    private companion object {
+        private const val SSH_PORT = 22
     }
 
     fun start(): SshUbuntu {
-        val ubuntu: GenericContainer<*> = UbuntuContainer(version = "18.04")
+        val ubuntu: GenericContainer<*> = UbuntuContainer(version)
             .withExposedPorts(SSH_PORT)
             .waitingFor(Wait.forListeningPort())
-        containerCustomization.accept(ubuntu)
+        customization.accept(ubuntu)
 
         ubuntu.start()
 
@@ -62,11 +61,30 @@ class SshUbuntuContainer(
      */
     private class UbuntuContainer(version: String) : GenericContainer<UbuntuContainer>(
         ImageFromDockerfile(/* dockerImageName = */ "ssh-ubuntu", /* deleteOnExit = */ false)
-            .withFileFromString("Dockerfile", SshUbuntuContainer::class.java.getResource("/docker/Dockerfile.template").readText().replace("%UBUNTU_VERSION%", version))
+            .withFileFromString(
+                "Dockerfile",
+                SshUbuntuContainer::class.java.getResource("/docker/Dockerfile.template").readText()
+                    .replace("%UBUNTU_VERSION%", version)
+            )
             .withFileFromClasspath("authorized_keys", "/docker/authorized_keys")
     ) {
         override fun getLivenessCheckPortNumbers(): Set<Int> {
             return setOf(getMappedPort(SSH_PORT))
+        }
+    }
+
+    class Builder {
+        private var version: String = "18.04"
+        private var customization: Consumer<GenericContainer<*>> = Consumer {}
+
+        fun version(version: String) = apply { this.version = version }
+        fun customization(customization: Consumer<GenericContainer<*>>) = apply { this.customization = customization }
+
+        fun build(): SshUbuntuContainer {
+            return SshUbuntuContainer(
+                version = version,
+                customization = customization
+            )
         }
     }
 }
