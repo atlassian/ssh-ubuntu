@@ -15,45 +15,22 @@ import java.util.function.Consumer
 class SshUbuntuTest {
     @Test
     fun shouldExecuteSshCommand() {
-        val result = execute("echo test")
+        val result = runSsh { it.execute("echo test") }
 
         assertThat(result.output).isEqualToIgnoringNewLines("test")
     }
 
     @Test
     fun shouldInstallPackagesFast() {
-        SshUbuntuContainer().start().use { sshUbuntu ->
-            Ssh(with(sshUbuntu.ssh) {
-                SshHost(
-                    ipAddress = ipAddress,
-                    userName = userName,
-                    authentication = PublicKeyAuthentication(privateKey),
-                    port = port
-                )
-            }).newConnection().use { connection ->
-                connection.execute("apt-get update", Duration.ofMinutes(5))
-                connection.execute("export DEBIAN_FRONTEND=noninteractive; apt-get install gnupg2 -y -qq", Duration.ofMinutes(5))
-            }
+        runSsh {
+            it.execute("apt-get update", Duration.ofMinutes(5))
+            it.execute(
+                "export DEBIAN_FRONTEND=noninteractive; apt-get install gnupg2 -y -qq",
+                Duration.ofMinutes(5)
+            )
         }
     }
 
-    private fun execute(
-        cmd: String,
-        timeout: Duration = Duration.ofSeconds(30)
-    ): SshConnection.SshResult {
-        SshUbuntuContainer().start().use { sshUbuntu ->
-            Ssh(with(sshUbuntu.ssh) {
-                SshHost(
-                    ipAddress = ipAddress,
-                    userName = userName,
-                    authentication = PublicKeyAuthentication(privateKey),
-                    port = port
-                )
-            }).newConnection().use { connection ->
-                return connection.execute(cmd, timeout)
-            }
-        }
-    }
 
     @Test
     fun shouldExposeAdditionalPorts() {
@@ -84,9 +61,35 @@ class SshUbuntuTest {
 
     @Test
     fun shouldInstallViaAptGet() {
-        execute(
-            cmd = "export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get install software-properties-common -y -qq",
-            timeout = Duration.ofMinutes(10)
-        )
+        runSsh {
+            it.execute(
+                cmd = "export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get install software-properties-common -y -qq",
+                timeout = Duration.ofMinutes(10)
+            )
+        }
+    }
+
+    @Test
+    fun shouldRunDockerInDocker() {
+        runSsh(Consumer { it.setPrivilegedMode(true) }) {
+            it.execute("apt update")
+            it.execute("apt install curl -y -qq")
+            it.execute("curl -fsSL https://get.docker.com -o get-docker.sh")
+            it.execute("sh ./get-docker.sh")
+            it.execute("service docker start")
+            it.execute("docker run hello-world")
+        }
+    }
+
+    private fun <T> runSsh(
+        customization: Consumer<GenericContainer<*>> = Consumer {},
+        action: (connection: SshConnection) -> T
+    ): T = SshUbuntuContainer(customization).start().use { sshUbuntu ->
+        val host = with(sshUbuntu.ssh) {
+            SshHost(ipAddress, userName, PublicKeyAuthentication(privateKey), port)
+        }
+        return@use Ssh(host)
+            .newConnection()
+            .use(action)
     }
 }
