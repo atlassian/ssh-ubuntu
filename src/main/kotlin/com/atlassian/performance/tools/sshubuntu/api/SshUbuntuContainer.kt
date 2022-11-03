@@ -21,7 +21,6 @@ class SshUbuntuContainer(
         val ubuntu: GenericContainer<*> = UbuntuContainer(version = "18.04")
             .withExposedPorts(SSH_PORT)
             .waitingFor(Wait.forListeningPort())
-            .withFileSystemBind("/tmp/dind-${UUID.randomUUID()}", "/var/lib/docker")
         containerCustomization.accept(ubuntu)
 
         ubuntu.start()
