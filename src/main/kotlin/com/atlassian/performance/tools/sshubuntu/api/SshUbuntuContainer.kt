@@ -5,6 +5,7 @@ import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.images.builder.ImageFromDockerfile
 import org.testcontainers.utility.MountableFile
 import java.io.File
+import java.util.*
 import java.util.function.Consumer
 
 class SshUbuntuContainer(
@@ -20,6 +21,7 @@ class SshUbuntuContainer(
         val ubuntu: GenericContainer<*> = UbuntuContainer(version = "18.04")
             .withExposedPorts(SSH_PORT)
             .waitingFor(Wait.forListeningPort())
+            .withFileSystemBind("/tmp/dind-${UUID.randomUUID()}", "/var/lib/docker")
         containerCustomization.accept(ubuntu)
 
         ubuntu.start()
