@@ -5,6 +5,8 @@ import com.atlassian.performance.tools.ssh.api.SshConnection
 import com.atlassian.performance.tools.ssh.api.SshHost
 import com.atlassian.performance.tools.ssh.api.auth.PublicKeyAuthentication
 import com.atlassian.performance.tools.sshubuntu.api.SshUbuntuContainer
+import com.github.dockerjava.api.model.Bind
+import com.github.dockerjava.api.model.Volume
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.testcontainers.containers.GenericContainer
@@ -71,7 +73,7 @@ class SshUbuntuTest {
 
     @Test
     fun shouldRunDockerInDocker() {
-        runSsh(Consumer { it.setPrivilegedMode(true) }) {
+        runSsh(Consumer(::enableDockerInDocker)) {
             it.execute("apt update")
             it.execute("apt install curl -y -qq")
             it.execute("curl -fsSL https://get.docker.com -o get-docker.sh")
@@ -79,6 +81,12 @@ class SshUbuntuTest {
             it.execute("service docker start")
             it.execute("docker run hello-world")
         }
+    }
+
+    private fun enableDockerInDocker(container: GenericContainer<*>) {
+        container.setPrivilegedMode(true)
+        val dockerDaemonSocket = "/var/run/docker.sock"
+        container.setBinds(listOf(Bind(dockerDaemonSocket, Volume(dockerDaemonSocket))))
     }
 
     private fun <T> runSsh(
