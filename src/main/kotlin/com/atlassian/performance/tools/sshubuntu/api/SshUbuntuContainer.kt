@@ -2,6 +2,8 @@ package com.atlassian.performance.tools.sshubuntu.api
 
 import com.atlassian.performance.tools.ssh.api.SshHost
 import com.atlassian.performance.tools.ssh.api.auth.PasswordAuthentication
+import com.github.dockerjava.api.model.Bind
+import com.github.dockerjava.api.model.Volume
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import java.util.function.Consumer
@@ -69,6 +71,11 @@ class SshUbuntuContainer private constructor(
 
         fun version(version: String) = apply { this.version = version }
         fun customization(customization: Consumer<GenericContainer<*>>) = apply { this.customization = customization }
+        fun enableDocker() = customization(Consumer {
+            it.setPrivilegedMode(true)
+            val dockerDaemonSocket = "/var/run/docker.sock"
+            it.setBinds(listOf(Bind(dockerDaemonSocket, Volume(dockerDaemonSocket))))
+        })
 
         fun build(): SshUbuntuContainer {
             return SshUbuntuContainer(

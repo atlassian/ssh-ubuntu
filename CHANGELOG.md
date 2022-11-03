@@ -25,6 +25,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 
 ### Added
 - Add `SshUbuntuContainer.Builder` with `version` override.
+- Add `SshUbuntuContainer.Builder.enableDocker`.
 
 ### Removed
 - Remove `SshUbuntuContainer` constructors in favour of the builder.
