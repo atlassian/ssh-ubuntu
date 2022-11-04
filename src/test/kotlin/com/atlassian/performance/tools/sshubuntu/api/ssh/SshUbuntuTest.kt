@@ -71,6 +71,34 @@ class SshUbuntuTest {
     }
 
     @Test
+    fun shouldWorkOnXenial() {
+        testRelease("16.04", "xenial")
+    }
+
+    @Test
+    fun shouldWorkOnBionic() {
+        testRelease("18.04", "bionic")
+    }
+
+    @Test
+    fun shouldWorkOnFocal() {
+        testRelease("20.04", "focal")
+    }
+
+    @Test
+    fun shouldWorkOnJammy() {
+        testRelease("22.04", "jammy")
+    }
+
+    private fun testRelease(version: String, codename: String) {
+        val releaseOutput = runSsh(SshUbuntuContainer.Builder().version(version)) {
+            it.execute("cat /etc/lsb-release").output
+        }
+
+        assertThat(releaseOutput).contains(codename)
+    }
+
+    @Test
     fun shouldRunDockerInDocker() {
         runSsh(SshUbuntuContainer.Builder().customization(Consumer(::enableDockerInDocker))) {
             it.execute("apt update")
