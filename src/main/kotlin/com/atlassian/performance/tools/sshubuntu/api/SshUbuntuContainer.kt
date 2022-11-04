@@ -1,11 +1,9 @@
 package com.atlassian.performance.tools.sshubuntu.api
 
+import com.atlassian.performance.tools.ssh.api.SshHost
+import com.atlassian.performance.tools.ssh.api.auth.PasswordAuthentication
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
-import org.testcontainers.images.builder.ImageFromDockerfile
-import org.testcontainers.utility.MountableFile
-import java.io.File
-import java.util.*
 import java.util.function.Consumer
 
 class SshUbuntuContainer private constructor(
@@ -24,15 +22,13 @@ class SshUbuntuContainer private constructor(
 
         ubuntu.start()
 
-        val sshKey = MountableFile.forClasspathResource("ssh_key")
         val sshPort = getHostSshPort(ubuntu)
-        val privateKey = File(sshKey.filesystemPath).toPath()
         val ipAddress = ubuntu.getContainerIpAddress()
         val sshHost = SshHost(
             ipAddress = ipAddress,
             userName = "root",
             port = sshPort,
-            privateKey = privateKey
+            authentication = PasswordAuthentication("root")
         )
         return object : SshUbuntu {
             override fun getSsh(): SshHost {
@@ -59,15 +55,9 @@ class SshUbuntuContainer private constructor(
      * https://github.com/testcontainers/testcontainers-java/issues/318
      * The class is a workaround for the problem.
      */
-    private class UbuntuContainer(version: String) : GenericContainer<UbuntuContainer>(
-        ImageFromDockerfile(/* dockerImageName = */ "ssh-ubuntu", /* deleteOnExit = */ false)
-            .withFileFromString(
-                "Dockerfile",
-                SshUbuntuContainer::class.java.getResource("/docker/Dockerfile.template").readText()
-                    .replace("%UBUNTU_VERSION%", version)
-            )
-            .withFileFromClasspath("authorized_keys", "/docker/authorized_keys")
-    ) {
+    private class UbuntuContainer(
+        version: String
+    ) : GenericContainer<UbuntuContainer>("takeyamajp/ubuntu-sshd:ubuntu$version") {
         override fun getLivenessCheckPortNumbers(): Set<Int> {
             return setOf(getMappedPort(SSH_PORT))
         }

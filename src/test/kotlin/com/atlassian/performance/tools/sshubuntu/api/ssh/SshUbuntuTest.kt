@@ -2,8 +2,6 @@ package com.atlassian.performance.tools.sshubuntu.api.ssh
 
 import com.atlassian.performance.tools.ssh.api.Ssh
 import com.atlassian.performance.tools.ssh.api.SshConnection
-import com.atlassian.performance.tools.ssh.api.SshHost
-import com.atlassian.performance.tools.ssh.api.auth.PublicKeyAuthentication
 import com.atlassian.performance.tools.sshubuntu.api.SshUbuntuContainer
 import com.github.dockerjava.api.model.Bind
 import com.github.dockerjava.api.model.Volume
@@ -119,11 +117,8 @@ class SshUbuntuTest {
     private fun <T> runSsh(
         ubuntuBuilder: SshUbuntuContainer.Builder = SshUbuntuContainer.Builder(),
         action: (connection: SshConnection) -> T
-    ): T = ubuntuBuilder.build().start().use { sshUbuntu ->
-        val host = with(sshUbuntu.ssh) {
-            SshHost(ipAddress, userName, PublicKeyAuthentication(privateKey), port)
-        }
-        return@use Ssh(host)
+    ): T = ubuntuBuilder.build().start().use {
+        Ssh(it.ssh)
             .newConnection()
             .use(action)
     }
