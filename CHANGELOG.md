@@ -34,6 +34,7 @@ Dropping a requirement of a major version of a dependency is a new contract.
 - Remove `SshUbuntuContainer` constructors in favour of the builder.
 
 ## [0.2.6] - 2022-09-20
+[0.2.6]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.5...release-0.2.6
 
 ### Changed
 - Bump testcontainers library to 1.17.3
