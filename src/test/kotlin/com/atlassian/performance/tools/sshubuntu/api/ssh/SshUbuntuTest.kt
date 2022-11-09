@@ -101,7 +101,7 @@ class SshUbuntuTest {
             it.execute("curl -fsSL https://get.docker.com -o get-docker.sh")
             it.execute("sh ./get-docker.sh", Duration.ofSeconds(50))
             it.execute("service docker start")
-            it.execute("docker run hello-world")
+            it.execute("docker run --volume /root:/tmp/test-volume hello-world")
         }
     }
 
