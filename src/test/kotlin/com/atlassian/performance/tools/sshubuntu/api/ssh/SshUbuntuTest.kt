@@ -96,13 +96,26 @@ class SshUbuntuTest {
     @Test
     fun shouldRunDockerInDocker() {
         runSsh(SshUbuntuContainer.Builder().enableDocker()) {
-            it.execute("apt update")
-            it.execute("apt install curl -y -qq")
-            it.execute("curl -fsSL https://get.docker.com -o get-docker.sh")
-            it.execute("sh ./get-docker.sh", Duration.ofSeconds(50))
-            it.execute("service docker start")
+            installDocker(it)
             it.execute("docker run hello-world")
         }
+    }
+
+    @Test
+    fun shouldConnectInsideDocker() {
+        runSsh(SshUbuntuContainer.Builder().enableDocker()) {
+            installDocker(it)
+            it.execute("docker run --rm -d -p 8080:80 nginx:1.23.2")
+            it.execute("curl http://localhost:8080")
+        }
+    }
+
+    private fun installDocker(ssh: SshConnection) {
+        ssh.execute("apt update")
+        ssh.execute("apt install curl -y -qq")
+        ssh.execute("curl -fsSL https://get.docker.com -o get-docker.sh")
+        ssh.execute("sh ./get-docker.sh", Duration.ofSeconds(50))
+        ssh.execute("service docker start")
     }
 
     private fun <T> runSsh(
