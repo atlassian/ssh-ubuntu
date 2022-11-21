@@ -23,6 +23,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.3.0...master
 
+### Fixed
+- Fix port mapping when `SshUbuntuContainer.Builder.enableDocker` is used. Unblock [JPERF-862].
+
+[JPERF-862]: https://ecosystem.atlassian.net/browse/JPERF-862
+
 ## [0.3.0] - 2022-11-07
 [0.3.0]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.6...release-0.3.0
 
