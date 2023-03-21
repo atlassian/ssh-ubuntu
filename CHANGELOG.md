@@ -23,6 +23,11 @@ Dropping a requirement of a major version of a dependency is a new contract.
 ## [Unreleased]
 [Unreleased]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.3.0...master
 
+### Fixed
+- Remove all `log4j` dependencies from POM. Fix [JPERF-570].
+
+[JPERF-570]: https://ecosystem.atlassian.net/browse/JPERF-570
+
 ## [0.3.0] - 2022-11-07
 [0.3.0]: https://github.com/atlassian/ssh-ubuntu/compare/release-0.2.6...release-0.3.0
 
