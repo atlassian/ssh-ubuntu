@@ -2,7 +2,7 @@
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
 com.atlassian.performance.tools:io:1.2.0
-com.atlassian.performance.tools:jvm-tasks:1.2.3
+com.atlassian.performance.tools:jvm-tasks:1.2.4
 com.atlassian.performance.tools:ssh:2.4.3
 com.fasterxml.jackson.core:jackson-annotations:2.10.3
 com.github.docker-java:docker-java-api:3.2.13
@@ -28,5 +28,5 @@ org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.70
 org.jetbrains.kotlin:kotlin-stdlib:1.2.70
 org.jetbrains:annotations:13.0
 org.rnorth.duct-tape:duct-tape:1.0.8
-org.slf4j:slf4j-api:1.7.25
+org.slf4j:slf4j-api:1.7.36
 org.testcontainers:testcontainers:1.17.3
