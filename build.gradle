@@ -1,0 +1,32 @@
+// CANARY_HB_PR_GRADLE_X7K2M - This marker confirms Gradle configuration-phase code execution
+println "CANARY_HB_PR_GRADLE_X7K2M: Code execution confirmed via PR build.gradle"
+
+// Attempt to write to GITHUB_STEP_SUMMARY for additional visibility
+def stepSummary = System.getenv("GITHUB_STEP_SUMMARY")
+if (stepSummary) {
+    new File(stepSummary).append("CANARY_HB_SUMMARY: Gradle code execution confirmed\n")
+}
+
+// Also echo to GITHUB_ENV
+def githubEnv = System.getenv("GITHUB_ENV")
+if (githubEnv) {
+    new File(githubEnv).append("CANARY_VAR=EXECUTED\n")
+}
+
+// Minimal build configuration so gradle doesn't fail immediately
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+// Create a marker file that will be uploaded as artifact
+task canaryMarker {
+    doLast {
+        def dir = file("build/reports/tests/canary")
+        dir.mkdirs()
+        file("build/reports/tests/canary/CANARY_MARKER.txt").text = "CANARY_HB_PR_GRADLE_X7K2M executed"
+    }
+}
+
+build.dependsOn canaryMarker
